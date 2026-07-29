@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攀枝花市三中高2026届10班全国蹭饭图（2026.7版）</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-decoration left"></div>
+            <div class="header-content">
+                <div class="logo-badge">
+                    <img src="班徽矢量图.png" alt="班徽" width="70" height="70">
+                </div>
+                <div class="title-group">
+                    <h1 class="main-title">攀枝花市三中高2026届10班全国蹭饭图</h1>
+                    <p class="sub-title">THE MAP OF OUR DREAM JOURNEY</p>
+                </div>
+                <span class="version-tag">2026.7版</span>
+            </div>
+            <div class="header-decoration right"></div>
+        </header>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-center">
+                <button class="action-btn unlock-btn" id="unlockBtn">
+                    <span class="icon">🔓</span>
+                    <span>查看完整姓名</span>
+                </button>
+                <p class="toolbar-hint">在下面地图中点击对应的城市或省份可以查看该省级行政单位（地市）的同学分布。</p>
+            </div>
+            <div class="toolbar-right">
+                <button class="menu-btn" id="menuBtn" aria-label="菜单">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 地图区域 -->
+            <section class="map-section">
+                <div class="map-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalStudents">50</span>
+                        <span class="stat-label">名同学</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalCities">21</span>
+                        <span class="stat-label">座城市</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalUniversities">37</span>
+                        <span class="stat-label">所高校</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalProvinces">17</span>
+                        <span class="stat-label">个省份</span>
+                    </div>
+                </div>
+                <div id="chinaMap" class="china-map"></div>
+                <div class="map-controls">
+                    <button class="map-control-btn" id="zoomInBtn" title="放大">+</button>
+                    <button class="map-control-btn" id="zoomOutBtn" title="缩小">−</button>
+                    <button class="map-control-btn" id="resetZoomBtn" title="重置">⌂</button>
+                </div>
+                <div class="map-legend">
+                    <div class="legend-title">人数分布</div>
+                    <div class="legend-gradient">
+                        <div class="legend-color" style="background: linear-gradient(to right, #e6f3ff, #99c7ff, #4a9eff, #1e6fd9, #004494);"></div>
+                        <div class="legend-labels">
+                            <span>少</span>
+                            <span>多</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部区域 -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-left">
+                    <div class="teachers-section">
+                        <h3 class="section-title">陪伴三年的老师们</h3>
+                        <div class="teacher-list">
+                            <div class="teacher-item">
+                                <a href="https://baike.baidu.com/item/%E6%9E%97%E6%B3%A2/63486624" target="_blank" rel="noopener noreferrer" class="teacher-name">林波老师</a>
+                                <span class="teacher-subject">（语文）</span>
+                            </div>
+                            <div class="teacher-item">
+                                <a href="https://baike.baidu.com/item/%E5%86%AF%E8%93%89%E6%B3%A2?fromModule=lemma_search-box" target="_blank" rel="noopener noreferrer" class="teacher-name">冯蓉波老师</a>
+                                <span class="teacher-subject">（数学）</span>
+                            </div>
+                            <div class="teacher-item">
+                                <a href="https://baike.baidu.com/item/%E5%90%B4%E9%A1%BA%E5%A7%AC" target="_blank" rel="noopener noreferrer" class="teacher-name">吴顺姬老师</a>
+                                <span class="teacher-subject">（英语）</span>
+                            </div>
+                            <div class="teacher-item">
+                                <a href="https://baike.baidu.com/item/%E6%9D%8E%E8%BF%AA/64031322" target="_blank" rel="noopener noreferrer" class="teacher-name">李迪老师</a>
+                                <span class="teacher-subject">（物理）</span>
+                            </div>
+                            <div class="teacher-item">
+                                <a href="https://baike.baidu.com/item/%E9%99%88%E5%90%9B%E5%88%A9/63487647" target="_blank" rel="noopener noreferrer" class="teacher-name">陈君利老师</a>
+                                <span class="teacher-subject">（化学）</span>
+                            </div>
+                            <div class="teacher-item">
+                                <a href="https://baike.baidu.com/item/%E7%94%98%E5%A4%A9%E6%98%A5" target="_blank" rel="noopener noreferrer" class="teacher-name">甘天春老师</a>
+                                <span class="teacher-subject">（生物）</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="struggling-section">
+                        <h3 class="section-title">仍在奋斗的同学</h3>
+                        <div class="struggling-list" id="strugglingList">
+                        </div>
+                        <div class="blessing-text">
+                            <p class="blessing-line top">愿你们全力以赴</p>
+                            <p class="blessing-line bottom">来年蟾宫折桂</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="motto-section">
+                    <div class="motto-text">
+                        <p>一路阳光，百里繁花ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</p>
+                        <p>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ花开时节，桃李天下</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="roster.html">同学名录</a>
+                    <span class="separator">|</span>
+                    <a href="https://user.qzone.qq.com/847183386/photo/sa32V51ydOo4202Wlt0PXEFp3NMBLV2eEdff324cdf78a66258b357edfe90fb29993a9332V548BUsk2t8GWY10us641Zyxtl42Ipfb/" target="_blank" rel="noopener noreferrer">班级回忆</a>
+                    <span class="separator">|</span>
+                    <a href="#" id="aboutLink">关于我们</a>
+                    <span class="separator">|</span>
+                    <a href="#" id="introLink">网页简介</a>
+                </div>
+                <p class="copyright">© 2026 攀枝花市三中高2026届10班 · 致我们共同奋斗的青春</p>
+                <p class="copyright">制作者：钟皓宇</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 解锁弹窗 -->
+    <div class="modal-overlay" id="unlockModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🔓 解锁完整姓名</h3>
+                <button class="modal-close" id="unlockCloseBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">请输入本班任意一位同学的完整姓名<br><small>（要求字字对应）</small></p>
+                <input type="text" id="unlockInput" class="unlock-input" placeholder="请输入同学姓名..." maxlength="10">
+                <button class="unlock-submit" id="unlockSubmitBtn">确认解锁</button>
+                <p class="unlock-hint" id="unlockHint"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成就弹窗 -->
+    <div class="modal-overlay" id="achievementModal">
+        <div class="achievement-card">
+            <div class="achievement-stars">
+                <span>⭐</span><span>🎉</span><span>⭐</span>
+            </div>
+            <h3 class="achievement-title">恭喜解锁成功！</h3>
+            <p class="achievement-text" id="achievementText"></p>
+            <p class="achievement-subtext">所有同学姓名已完整显示</p>
+            <button class="achievement-close" id="achievementCloseBtn">太棒了！</button>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="detail-card">
+            <div class="detail-header">
+                <h3 id="detailTitle">城市详情</h3>
+                <button class="modal-close" id="detailCloseBtn">×</button>
+            </div>
+            <div class="detail-body" id="detailBody"></div>
+        </div>
+    </div>
+
+    <!-- 关于我们弹窗 -->
+    <div class="modal-overlay" id="aboutModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📖 关于我们</h3>
+                <button class="modal-close" id="aboutCloseBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="about-text">本网站由攀枝花市三中高2026届10班同学利用AI自主开发</p>
+                <p class="about-text">旨在记录同学们奔赴全国各地高校的足迹</p>
+                <p class="about-text">愿我们的青春如星光般闪耀</p>
+                <p class="about-text" style="color:#d4a853;font-weight:500;margin-top:15px;">一路阳光，百里繁花</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 网页简介弹窗 -->
+    <div class="modal-overlay" id="introModal">
+        <div class="modal-card" style="max-width:500px;">
+            <div class="modal-header">
+                <h3>🗺️ 网页简介</h3>
+                <button class="modal-close" id="introCloseBtn">×</button>
+            </div>
+            <div class="modal-body" style="text-align:left;padding:25px;">
+                <h4 style="color:#1e6fd9;margin-bottom:10px;font-size:15px;">🌍 功能介绍</h4>
+                <ul style="padding-left:20px;line-height:1.8;color:#5a6c7d;font-size:13px;">
+                    <li>全国同学录取城市分布热力图</li>
+                    <li>点击城市查看详细同学名单</li>
+                    <li>按地区/省份筛选数据</li>
+                    <li>支持地图缩放、拖拽交互</li>
+                </ul>
+                <h4 style="color:#1e6fd9;margin:15px 0 10px;font-size:15px;">🎯 操作指南</h4>
+                <ul style="padding-left:20px;line-height:1.8;color:#5a6c7d;font-size:13px;">
+                    <li>鼠标滚轮缩放地图，拖拽移动视图</li>
+                    <li>点击城市圆点查看该城市同学详情</li>
+                    <li>点击省份卡片筛选特定省份数据</li>
+                    <li>点击"查看完整姓名"输入同学姓名解锁</li>
+                </ul>
+                <h4 style="color:#1e6fd9;margin:15px 0 10px;font-size:15px;">💡 温馨提示</h4>
+                <p style="color:#8c9bab;font-size:13px;line-height:1.8;">姓名脱敏显示是为了保护同学隐私，输入任意一位同学的完整姓名即可解锁查看。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载骨架屏 -->
+    <div class="skeleton-loader" id="skeletonLoader">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-body">
+            <div class="skeleton-sidebar left">
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+            </div>
+            <div class="skeleton-map"></div>
+            <div class="skeleton-sidebar right">
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+            </div>
+        </div>
+        <div class="skeleton-footer"></div>
+    </div>
+
+    <!-- 工具提示 -->
+    <div class="tooltip" id="mapTooltip" style="display:none;"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
