@@ -873,7 +873,7 @@ function updateStrugglingList() {
     const strugglingList = document.getElementById('strugglingList');
     if (!strugglingList) return;
     
-    const strugglingStudents = ['陈裕禧', '李乐瑄', '李欣橦', '赖宸熹'];
+    const strugglingStudents = ['陈裕禧', '李乐瑄', '李欣橦', '赖宸熹', '何星瑞', '周子萱'];
     strugglingList.innerHTML = strugglingStudents.map(name => {
         const maskedName = maskName(name);
         const displayName = isUnlocked ? name : maskedName;
