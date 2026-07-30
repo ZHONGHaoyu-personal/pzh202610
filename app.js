@@ -1135,53 +1135,73 @@ function initFilterEvents() {
     }
 }
 
-// 初始化页面
+// 初始化页面（分阶段异步加载）
 async function init() {
     const skeleton = document.getElementById('skeletonLoader');
     const hideSkeleton = () => {
         skeleton.classList.add('hide');
         setTimeout(() => {
             skeleton.style.display = 'none';
-        }, 500);
+        }, 300);
     };
 
     try {
-        // 并行加载数据和地图
-        const [dataLoaded, mapLoaded] = await Promise.all([
-            loadData(),
-            loadMapData()
-        ]);
+        // 阶段1：快速加载数据（小文件，~13KB）
+        const dataLoaded = await loadData();
 
-        if (dataLoaded) {
-            // 初始化地图
-            if (mapLoaded) {
-                try { initMap(); } catch (e) { console.error('地图初始化失败:', e); }
-            }
-
-            // 生成省份列表
-            try { generateProvinceList(); } catch (e) { console.error('省份列表生成失败:', e); }
-
-            // 更新统计
-            try { updateStats(); } catch (e) { console.error('统计更新失败:', e); }
-
-            // 更新奋斗同学列表
-            try { updateStrugglingList(); } catch (e) { console.error('奋斗同学列表更新失败:', e); }
-
-            // 初始化交互
-            try { initUnlockFunction(); } catch (e) { console.error('解锁功能初始化失败:', e); }
-            try { initMapControls(); } catch (e) { console.error('地图控件初始化失败:', e); }
-            try { initFilterEvents(); } catch (e) { console.error('筛选事件初始化失败:', e); }
-            try { initTooltipInteraction(); } catch (e) { console.error('提示框交互初始化失败:', e); }
-        } else {
+        if (!dataLoaded) {
             throw new Error('数据加载失败');
         }
 
-        // 隐藏骨架屏（即使部分初始化失败也执行）
-        setTimeout(hideSkeleton, 300);
+        // 立即显示基本信息（统计数字、省份列表、奋斗同学）
+        try { updateStats(); } catch (e) { console.error(e); }
+        try { generateProvinceList(); } catch (e) { console.error(e); }
+        try { updateStrugglingList(); } catch (e) { console.error(e); }
+        try { initUnlockFunction(); } catch (e) { console.error(e); }
+        try { initTooltipInteraction(); } catch (e) { console.error(e); }
+        try { initFooterEvents(); } catch (e) { console.error(e); }
+
+        // 先隐藏骨架屏，让用户看到页面
+        hideSkeleton();
+
+        // 阶段2：页面显示后，再加载地图（大文件 ~61KB GeoJSON + ECharts渲染）
+        if (window.echarts) {
+            // 使用 requestIdleCallback 或延迟，避免阻塞首帧
+            const startMapLoading = () => {
+                loadMapData().then(mapLoaded => {
+                    if (mapLoaded) {
+                        try { initMap(); } catch (e) { console.error('地图初始化失败:', e); }
+                        try { initMapControls(); } catch (e) { console.error(e); }
+                        try { initFilterEvents(); } catch (e) { console.error(e); }
+                    }
+                }).catch(e => console.error('地图数据加载失败:', e));
+            };
+
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(startMapLoading, { timeout: 5000 });
+            } else {
+                setTimeout(startMapLoading, 500);
+            }
+        } else {
+            // ECharts 还在加载中，等待它
+            const waitForEcharts = () => {
+                if (window.echarts) {
+                    loadMapData().then(mapLoaded => {
+                        if (mapLoaded) {
+                            try { initMap(); } catch (e) { console.error(e); }
+                            try { initMapControls(); } catch (e) { console.error(e); }
+                            try { initFilterEvents(); } catch (e) { console.error(e); }
+                        }
+                    }).catch(e => console.error(e));
+                } else {
+                    setTimeout(waitForEcharts, 100);
+                }
+            };
+            waitForEcharts();
+        }
 
     } catch (error) {
         console.error('初始化失败:', error);
-        // 仍然隐藏骨架屏，显示错误提示
         try {
             skeleton.innerHTML = `
                 <div style="display:flex;align-items:center;justify-content:center;height:100vh;">
@@ -1259,7 +1279,7 @@ function initFooterEvents() {
     }
 }
 
-// 音乐播放器初始化
+// 音乐播放器初始化（懒加载）
 function initMusicPlayer() {
     const audio = document.getElementById('bgmAudio');
     const playBtn = document.getElementById('musicPlayBtn');
@@ -1268,6 +1288,9 @@ function initMusicPlayer() {
     const volumeSlider = document.getElementById('musicVolume');
     
     if (!audio || !playBtn) return;
+    
+    let hasLoaded = false;
+    let isLoading = false;
     
     // 当音频播放状态变化时更新UI
     audio.addEventListener('playing', () => {
@@ -1279,16 +1302,26 @@ function initMusicPlayer() {
     audio.addEventListener('pause', () => {
         playBtn.classList.remove('playing');
         playIcon.textContent = '▶';
-        playText.textContent = '想燃一点？开播放器听歌哦';
+        if (audio.ended || !hasLoaded) {
+            playText.textContent = '想燃一点？开播放器听歌哦';
+        } else {
+            playText.textContent = '继续播放';
+        }
     });
     
     audio.addEventListener('waiting', () => {
-        playText.textContent = '缓冲中...';
+        playText.textContent = '加载中...';
+    });
+    
+    audio.addEventListener('canplay', () => {
+        hasLoaded = true;
+        isLoading = false;
     });
     
     audio.addEventListener('error', () => {
+        isLoading = false;
         console.warn('音频加载失败');
-        playText.textContent = '音乐加载失败';
+        playText.textContent = '音乐文件不存在，请放置 audio/bgm.mp3';
         setTimeout(() => {
             if (audio.paused) {
                 playText.textContent = '想燃一点？开播放器听歌哦';
@@ -1302,18 +1335,23 @@ function initMusicPlayer() {
         playText.textContent = '想燃一点？开播放器听歌哦';
     });
     
-    // 点击播放/暂停
-    playBtn.addEventListener('click', () => {
+    // 点击播放/暂停（懒加载）
+    playBtn.addEventListener('click', async () => {
         if (audio.paused) {
-            const p = audio.play();
-            if (p && typeof p.catch === 'function') {
-                p.catch(err => {
-                    console.warn('播放失败:', err);
-                    playText.textContent = '播放失败，重试';
-                    setTimeout(() => {
-                        if (audio.paused) playText.textContent = '想燃一点？开播放器听歌哦';
-                    }, 2000);
-                });
+            if (!hasLoaded && !isLoading) {
+                // 首次点击，触发加载
+                isLoading = true;
+                playText.textContent = '加载中...';
+                audio.load();
+            }
+            try {
+                await audio.play();
+            } catch (err) {
+                console.warn('播放失败:', err);
+                playText.textContent = '播放失败，重试';
+                setTimeout(() => {
+                    if (audio.paused) playText.textContent = '想燃一点？开播放器听歌哦';
+                }, 2000);
             }
         } else {
             audio.pause();
@@ -1336,17 +1374,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initMusicPlayer();
     // 初始化页脚链接事件
     initFooterEvents();
-    // 安全兜底：15秒后强制隐藏骨架屏，避免一直转圈
-    let safetyTimer = setTimeout(() => {
-        const skeleton = document.getElementById('skeletonLoader');
-        if (skeleton && skeleton.style.display !== 'none') {
-            console.warn('初始化超时，强制隐藏骨架屏');
-            skeleton.classList.add('hide');
-            setTimeout(() => { skeleton.style.display = 'none'; }, 500);
-        }
-    }, 15000);
-    // 加载地图和数据
-    init().then(() => {
-        clearTimeout(safetyTimer);
-    });
+    // 分阶段加载
+    init();
 });
