@@ -26,6 +26,19 @@
             <div class="header-decoration right"></div>
         </header>
 
+        <!-- 音乐播放器 -->
+        <div class="music-player">
+            <button class="music-play-btn" id="musicPlayBtn" aria-label="播放">
+                <span class="play-icon">▶</span>
+                <span class="play-text">想燃一点？开播放器听歌哦</span>
+            </button>
+            <div class="music-volume">
+                <span class="volume-icon">🔊</span>
+                <input type="range" id="musicVolume" min="0" max="100" value="70" class="volume-slider" aria-label="音量">
+            </div>
+            <audio id="bgmAudio" preload="none" crossorigin="anonymous"></audio>
+        </div>
+
         <!-- 工具栏 -->
         <div class="toolbar">
             <div class="toolbar-center">
@@ -152,6 +165,7 @@
                 </div>
                 <p class="copyright">© 2026 攀枝花市三中高2026届10班 · 致我们共同奋斗的青春</p>
                 <p class="copyright">制作者：钟皓宇</p>
+                <p class="disclaimer">⚠️ 本站内容仅供交流学习使用，请勿用于商业用途</p>
             </div>
         </footer>
     </div>
@@ -236,6 +250,7 @@
                 </ul>
                 <h4 style="color:#1e6fd9;margin:15px 0 10px;font-size:15px;">💡 温馨提示</h4>
                 <p style="color:#8c9bab;font-size:13px;line-height:1.8;">姓名脱敏显示是为了保护同学隐私，输入任意一位同学的完整姓名即可解锁查看。</p>
+                <p style="color:#8c9bab;font-size:13px;line-height:1.8;margin-top:8px;">本站所用字体（庞门正道标题体、Noto Sans SC、马善政）均为免费可商用字体。</p>
             </div>
         </div>
     </div>

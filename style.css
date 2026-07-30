@@ -147,6 +147,99 @@ body {
     font-weight: 500;
 }
 
+/* 音乐播放器 */
+.music-player {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, rgba(30, 111, 217, 0.06), rgba(255, 215, 0, 0.04));
+    border-radius: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.music-play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #1e6fd9, #4a9eff);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.music-play-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(30, 111, 217, 0.3);
+}
+
+.music-play-btn.playing .play-icon {
+    animation: pulse 1s infinite;
+}
+
+.music-play-btn.playing {
+    background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+}
+
+.music-play-btn .play-icon {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+.music-play-btn.playing .play-icon {
+    animation: pulse 1s infinite;
+}
+
+.music-volume {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-icon {
+    font-size: 16px;
+}
+
+.volume-slider {
+    width: 100px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #1e6fd9 var(--volume, 70%), #e0e8f0 var(--volume, 70%));
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #1e6fd9;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(30, 111, 217, 0.3);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #1e6fd9;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(30, 111, 217, 0.3);
+}
+
 /* 工具栏 */
 .toolbar {
     display: flex;
@@ -640,6 +733,14 @@ body {
 .copyright {
     font-size: 12px;
     opacity: 0.8;
+}
+
+.disclaimer {
+    font-size: 12px;
+    color: #e74c3c;
+    margin-top: 8px;
+    font-weight: 500;
+    text-align: center;
 }
 
 /* 弹窗样式 */
@@ -1145,6 +1246,20 @@ body {
 
     .sub-title {
         font-size: 12px;
+    }
+
+    .music-player {
+        gap: 12px;
+        padding: 8px 12px;
+    }
+
+    .music-play-btn {
+        padding: 6px 14px;
+        font-size: 12px;
+    }
+
+    .volume-slider {
+        width: 70px;
     }
 
     .map-stats {

@@ -1172,6 +1172,9 @@ async function init() {
         // 初始化页脚链接事件
         initFooterEvents();
         
+        // 初始化音乐播放器
+        initMusicPlayer();
+        
         // 隐藏骨架屏
         setTimeout(() => {
             skeleton.classList.add('hide');
@@ -1254,6 +1257,62 @@ function initFooterEvents() {
             if (e.target === unlockModal) unlockModal.classList.remove('show');
         });
     }
+}
+
+// 音乐播放器初始化
+function initMusicPlayer() {
+    const audio = document.getElementById('bgmAudio');
+    const playBtn = document.getElementById('musicPlayBtn');
+    const playIcon = playBtn.querySelector('.play-icon');
+    const playText = playBtn.querySelector('.play-text');
+    const volumeSlider = document.getElementById('musicVolume');
+    
+    if (!audio || !playBtn) return;
+    
+    const songs = ['music/Ashes Remain - On My Own.mp3'];
+    let currentSong = 0;
+    let loaded = false;
+    
+    // 点击播放/暂停
+    playBtn.addEventListener('click', () => {
+        if (!loaded) {
+            audio.src = songs[currentSong];
+            audio.load();
+            loaded = true;
+        }
+        
+        if (audio.paused) {
+            audio.play().then(() => {
+                playBtn.classList.add('playing');
+                playIcon.textContent = '⏸';
+                playText.textContent = '暂停';
+            }).catch(err => {
+                console.warn('音频播放失败:', err);
+            });
+        } else {
+            audio.pause();
+            playBtn.classList.remove('playing');
+            playIcon.textContent = '▶';
+            playText.textContent = '想燃一点？开播放器听歌哦';
+        }
+    });
+    
+    // 音量控制
+    volumeSlider.addEventListener('input', (e) => {
+        const vol = e.target.value / 100;
+        audio.volume = vol;
+        volumeSlider.style.setProperty('--volume', e.target.value + '%');
+    });
+    
+    // 初始化音量
+    audio.volume = 0.7;
+    
+    // 自动播放下一首（循环）
+    audio.addEventListener('ended', () => {
+        currentSong = (currentSong + 1) % songs.length;
+        audio.src = songs[currentSong];
+        audio.play().catch(err => console.warn('音频播放失败:', err));
+    });
 }
 
 // 页面加载完成后初始化
