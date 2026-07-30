@@ -8,7 +8,6 @@
     <link rel="preload" href="fonts/MaShanZheng.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/pangmenzhengdaocu.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/NotoSansSC.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 </head>
 <body>
     <div class="app-container">
@@ -38,8 +37,8 @@
                 <span class="volume-icon">🔊</span>
                 <input type="range" id="musicVolume" min="0" max="100" value="70" class="volume-slider" aria-label="音量">
             </div>
-            <audio id="bgmAudio" preload="none">
-                <source src="https://m801.music.126.net/20260730211805/1032a67eb6221b97978fd82d6985e238/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/29819968228/da5a/9875/d37d/df04cc37d5e5bc136ad97f23df5a0aba.mp3" type="audio/mpeg">
+            <audio id="bgmAudio" preload="auto">
+                <source src="audio/bgm.mp3" type="audio/mpeg">
             </audio>
         </div>
 
@@ -282,7 +281,7 @@
     <!-- 工具提示 -->
     <div class="tooltip" id="mapTooltip" style="display:none;"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js" defer></script>
+    <script src="vendor/echarts.min.js" defer></script>
     <script src="app.js" defer></script>
 </body>
 </html>
