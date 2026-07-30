@@ -1269,31 +1269,54 @@ function initMusicPlayer() {
     
     if (!audio || !playBtn) return;
     
-    const songs = ['music/Ashes Remain - On My Own.mp3'];
-    let currentSong = 0;
-    let loaded = false;
+    // 当音频播放状态变化时更新UI
+    audio.addEventListener('playing', () => {
+        playBtn.classList.add('playing');
+        playIcon.textContent = '⏸';
+        playText.textContent = '暂停';
+    });
+    
+    audio.addEventListener('pause', () => {
+        playBtn.classList.remove('playing');
+        playIcon.textContent = '▶';
+        playText.textContent = '想燃一点？开播放器听歌哦';
+    });
+    
+    audio.addEventListener('waiting', () => {
+        playText.textContent = '缓冲中...';
+    });
+    
+    audio.addEventListener('error', () => {
+        console.warn('音频加载失败');
+        playText.textContent = '音乐加载失败';
+        setTimeout(() => {
+            if (audio.paused) {
+                playText.textContent = '想燃一点？开播放器听歌哦';
+            }
+        }, 3000);
+    });
+    
+    audio.addEventListener('ended', () => {
+        playBtn.classList.remove('playing');
+        playIcon.textContent = '▶';
+        playText.textContent = '想燃一点？开播放器听歌哦';
+    });
     
     // 点击播放/暂停
     playBtn.addEventListener('click', () => {
-        if (!loaded) {
-            audio.src = songs[currentSong];
-            audio.load();
-            loaded = true;
-        }
-        
         if (audio.paused) {
-            audio.play().then(() => {
-                playBtn.classList.add('playing');
-                playIcon.textContent = '⏸';
-                playText.textContent = '暂停';
-            }).catch(err => {
-                console.warn('音频播放失败:', err);
-            });
+            const p = audio.play();
+            if (p && typeof p.catch === 'function') {
+                p.catch(err => {
+                    console.warn('播放失败:', err);
+                    playText.textContent = '播放失败，重试';
+                    setTimeout(() => {
+                        if (audio.paused) playText.textContent = '想燃一点？开播放器听歌哦';
+                    }, 2000);
+                });
+            }
         } else {
             audio.pause();
-            playBtn.classList.remove('playing');
-            playIcon.textContent = '▶';
-            playText.textContent = '想燃一点？开播放器听歌哦';
         }
     });
     
@@ -1301,18 +1324,10 @@ function initMusicPlayer() {
     volumeSlider.addEventListener('input', (e) => {
         const vol = e.target.value / 100;
         audio.volume = vol;
-        volumeSlider.style.setProperty('--volume', e.target.value + '%');
     });
     
     // 初始化音量
     audio.volume = 0.7;
-    
-    // 自动播放下一首（循环）
-    audio.addEventListener('ended', () => {
-        currentSong = (currentSong + 1) % songs.length;
-        audio.src = songs[currentSong];
-        audio.play().catch(err => console.warn('音频播放失败:', err));
-    });
 }
 
 // 页面加载完成后初始化
@@ -1321,14 +1336,17 @@ document.addEventListener('DOMContentLoaded', () => {
     initMusicPlayer();
     // 初始化页脚链接事件
     initFooterEvents();
-    // 安全兜底：10秒后强制隐藏骨架屏
-    setTimeout(() => {
+    // 安全兜底：15秒后强制隐藏骨架屏，避免一直转圈
+    let safetyTimer = setTimeout(() => {
         const skeleton = document.getElementById('skeletonLoader');
         if (skeleton && skeleton.style.display !== 'none') {
+            console.warn('初始化超时，强制隐藏骨架屏');
             skeleton.classList.add('hide');
             setTimeout(() => { skeleton.style.display = 'none'; }, 500);
         }
-    }, 10000);
+    }, 15000);
     // 加载地图和数据
-    init();
+    init().then(() => {
+        clearTimeout(safetyTimer);
+    });
 });

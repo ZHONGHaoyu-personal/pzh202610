@@ -1078,6 +1078,20 @@ body {
     margin-top: 20px;
 }
 
+.skeleton-hint {
+    text-align: center;
+    color: #8c9bab;
+    font-size: 13px;
+    margin-top: 10px;
+    pointer-events: auto;
+}
+
+.skeleton-hint a {
+    color: #1e6fd9;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }

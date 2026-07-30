@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>攀枝花市三中高2026届10班全国蹭饭图（2026.7版）</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://m801.music.126.net">
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -15,7 +18,7 @@
             <div class="header-decoration left"></div>
             <div class="header-content">
                 <div class="logo-badge">
-                    <img src="班徽矢量图1.png" alt="班徽" width="70" height="70">
+                    <img src="班徽矢量图.png" alt="班徽" width="70" height="70">
                 </div>
                 <div class="title-group">
                     <h1 class="main-title">攀枝花市三中高2026届10班全国蹭饭图</h1>
@@ -36,7 +39,9 @@
                 <span class="volume-icon">🔊</span>
                 <input type="range" id="musicVolume" min="0" max="100" value="70" class="volume-slider" aria-label="音量">
             </div>
-            <audio id="bgmAudio" preload="none"></audio>
+            <audio id="bgmAudio" preload="none">
+                <source src="https://m801.music.126.net/20260730195412/2f02e1d63a3f68c32138b160111ea6ce/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/29819968228/da5a/9875/d37d/df04cc37d5e5bc136ad97f23df5a0aba.mp3?vuutv=8qT+K/zujEfntgsAxx3nTAIaO1SvrvpTh5hrRtvhVf3yCIFiFuD2IKp7vIromo9otkNmHZXS+AOodQaouokahIPXFwQd2yr8NhQ6otuLJ0Q=&authSecret=0000019fb2c91d530eeb0a64e3f80006&cdntag=bWFyaz1vc193ZWIscXVhbGl0eV9leGhpZ2g" type="audio/mpeg">
+            </audio>
         </div>
 
         <!-- 工具栏 -->
@@ -272,11 +277,13 @@
             </div>
         </div>
         <div class="skeleton-footer"></div>
+        <div class="skeleton-hint">正在加载中... 若长时间未响应，请<a href="#" onclick="location.reload();return false;">点击刷新</a></div>
     </div>
 
     <!-- 工具提示 -->
     <div class="tooltip" id="mapTooltip" style="display:none;"></div>
 
-    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js" defer></script>
+    <script src="app.js" defer></script>
 </body>
 </html>
