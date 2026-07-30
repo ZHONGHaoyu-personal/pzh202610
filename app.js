@@ -1165,6 +1165,9 @@ async function init() {
         hideSkeleton();
 
         // 阶段2：页面显示后，再加载地图（大文件 ~61KB GeoJSON + ECharts渲染）
+        // 同时在后台预加载音频，确保用户点击播放时已缓存完成
+        preloadAudio();
+        
         if (window.echarts) {
             // 使用 requestIdleCallback 或延迟，避免阻塞首帧
             const startMapLoading = () => {
@@ -1279,7 +1282,7 @@ function initFooterEvents() {
     }
 }
 
-// 音乐播放器初始化（懒加载）
+// 音乐播放器初始化
 function initMusicPlayer() {
     const audio = document.getElementById('bgmAudio');
     const playBtn = document.getElementById('musicPlayBtn');
@@ -1288,9 +1291,6 @@ function initMusicPlayer() {
     const volumeSlider = document.getElementById('musicVolume');
     
     if (!audio || !playBtn) return;
-    
-    let hasLoaded = false;
-    let isLoading = false;
     
     // 当音频播放状态变化时更新UI
     audio.addEventListener('playing', () => {
@@ -1302,24 +1302,18 @@ function initMusicPlayer() {
     audio.addEventListener('pause', () => {
         playBtn.classList.remove('playing');
         playIcon.textContent = '▶';
-        if (audio.ended || !hasLoaded) {
-            playText.textContent = '想燃一点？开播放器听歌哦';
-        } else {
-            playText.textContent = '继续播放';
-        }
+        playText.textContent = '继续播放';
     });
     
     audio.addEventListener('waiting', () => {
-        playText.textContent = '加载中...';
+        playText.textContent = '缓冲中...';
     });
     
     audio.addEventListener('canplay', () => {
-        hasLoaded = true;
-        isLoading = false;
+        if (!audio.paused) playText.textContent = '暂停';
     });
     
     audio.addEventListener('error', () => {
-        isLoading = false;
         console.warn('音频加载失败');
         playText.textContent = '音乐文件不存在，请放置 audio/bgm.mp3';
         setTimeout(() => {
@@ -1335,23 +1329,18 @@ function initMusicPlayer() {
         playText.textContent = '想燃一点？开播放器听歌哦';
     });
     
-    // 点击播放/暂停（懒加载）
-    playBtn.addEventListener('click', async () => {
+    // 点击播放/暂停
+    playBtn.addEventListener('click', () => {
         if (audio.paused) {
-            if (!hasLoaded && !isLoading) {
-                // 首次点击，触发加载
-                isLoading = true;
-                playText.textContent = '加载中...';
-                audio.load();
-            }
-            try {
-                await audio.play();
-            } catch (err) {
-                console.warn('播放失败:', err);
-                playText.textContent = '播放失败，重试';
-                setTimeout(() => {
-                    if (audio.paused) playText.textContent = '想燃一点？开播放器听歌哦';
-                }, 2000);
+            const p = audio.play();
+            if (p && typeof p.catch === 'function') {
+                p.catch(err => {
+                    console.warn('播放失败:', err);
+                    playText.textContent = '播放失败，重试';
+                    setTimeout(() => {
+                        if (audio.paused) playText.textContent = '想燃一点？开播放器听歌哦';
+                    }, 2000);
+                });
             }
         } else {
             audio.pause();
@@ -1366,6 +1355,14 @@ function initMusicPlayer() {
     
     // 初始化音量
     audio.volume = 0.7;
+}
+
+// 后台预加载音频（在地图加载后触发）
+function preloadAudio() {
+    const audio = document.getElementById('bgmAudio');
+    if (!audio) return;
+    // 主动触发加载，确保缓存到浏览器
+    audio.load();
 }
 
 // 页面加载完成后初始化
