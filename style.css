@@ -6,7 +6,7 @@
 
 @font-face {
     font-family: 'PangmenZhengDaoCu';
-    src: url('fonts/pangmenzhengdaocu.ttf') format('truetype');
+    src: url('fonts/pangmenzhengdaocu.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -14,7 +14,7 @@
 
 @font-face {
     font-family: 'MaShanZheng';
-    src: url('fonts/MaShanZheng-subset-cjk-a.ttf') format('truetype');
+    src: url('fonts/MaShanZheng.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -22,7 +22,7 @@
 
 @font-face {
     font-family: 'NotoSansSC';
-    src: url('fonts/NotoSansSC-subset-cjk-a.woff2') format('woff2');
+    src: url('fonts/NotoSansSC.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
