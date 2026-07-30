@@ -6,6 +6,22 @@ let filteredData = null;
 let currentRegion = null;
 let currentProvince = null;
 
+// 省份显示全称映射（用于UI展示）
+const provinceFullNames = {
+    '北京': '北京市', '天津': '天津市', '上海': '上海市', '重庆': '重庆市',
+    '河北': '河北省', '山西': '山西省', '辽宁': '辽宁省', '吉林': '吉林省', '黑龙江': '黑龙江省',
+    '江苏': '江苏省', '浙江': '浙江省', '安徽': '安徽省', '福建': '福建省', '江西': '江西省', '山东': '山东省',
+    '河南': '河南省', '湖北': '湖北省', '湖南': '湖南省', '广东': '广东省', '海南': '海南省',
+    '四川': '四川省', '贵州': '贵州省', '云南': '云南省', '陕西': '陕西省', '甘肃': '甘肃省', '青海': '青海省',
+    '台湾': '台湾省',
+    '内蒙古': '内蒙古自治区', '广西': '广西壮族自治区', '西藏': '西藏自治区', '宁夏': '宁夏回族自治区', '新疆': '新疆维吾尔自治区',
+    '香港': '香港特别行政区', '澳门': '澳门特别行政区'
+};
+
+function getProvinceDisplayName(name) {
+    return provinceFullNames[name] || (name + '省');
+}
+
 // 区域映射
 const regionMap = {
     '华北': ['北京', '天津', '河北', '山西', '内蒙古'],
@@ -447,7 +463,7 @@ function showCustomTooltip(params) {
     const students = getCityStudents(data);
     
     let html = `
-        <div class="tooltip-title">${data.name || data.city} · ${data.province} <span style="float:right;color:#ffd700;">${data.count}人</span></div>
+        <div class="tooltip-title">${data.name || data.city} · ${getProvinceDisplayName(data.province)} <span style="float:right;color:#ffd700;">${data.count}人</span></div>
     `;
     
     students.forEach(student => {
@@ -543,7 +559,7 @@ function showCityDetail(cityData) {
     const body = document.getElementById('detailBody');
     
     const cityName = cityData.city || cityData.name;
-    title.textContent = `${cityName} · ${cityData.province}`;
+    title.textContent = `${cityName} · ${getProvinceDisplayName(cityData.province)}`;
     
     // 获取该城市的学生列表（通过ID）
     const students = getCityStudents(cityData);
@@ -562,7 +578,7 @@ function showCityDetail(cityData) {
             <span class="detail-city-icon">📍</span>
             <div>
                 <div class="detail-city-name">${cityData.count} 名同学录取到此</div>
-                <div class="detail-city-province">${cityData.province}省</div>
+                <div class="detail-city-province">${getProvinceDisplayName(cityData.province)}</div>
             </div>
         </div>
     `;
@@ -601,7 +617,7 @@ function showProvinceDetail(provinceName) {
     const provinceCities = filteredData.cityStats.filter(c => c.province === provinceName);
     const totalStudents = provinceCities.reduce((sum, c) => sum + c.count, 0);
     
-    title.textContent = `${provinceName}省`;
+    title.textContent = getProvinceDisplayName(provinceName);
     
     let html = `
         <div class="detail-city-info">
@@ -725,7 +741,7 @@ function generateProvinceCards(provinces, provinceData, side) {
             html += `
                 <div class="province-card ${animationClass}" data-province="${province}">
                     <div class="province-header">
-                        <span class="province-name">${province}</span>
+                        <span class="province-name">${getProvinceDisplayName(province)}</span>
                         <span class="province-count">${count}人</span>
                     </div>
                     <div class="province-students">
