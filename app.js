@@ -1137,64 +1137,64 @@ function initFilterEvents() {
 
 // 初始化页面
 async function init() {
+    const skeleton = document.getElementById('skeletonLoader');
+    const hideSkeleton = () => {
+        skeleton.classList.add('hide');
+        setTimeout(() => {
+            skeleton.style.display = 'none';
+        }, 500);
+    };
+
     try {
-        // 显示骨架屏
-        const skeleton = document.getElementById('skeletonLoader');
-        
         // 并行加载数据和地图
         const [dataLoaded, mapLoaded] = await Promise.all([
             loadData(),
             loadMapData()
         ]);
 
-        if (!dataLoaded || !mapLoaded) {
-            throw new Error('必要数据加载失败');
+        if (dataLoaded) {
+            // 初始化地图
+            if (mapLoaded) {
+                try { initMap(); } catch (e) { console.error('地图初始化失败:', e); }
+            }
+
+            // 生成省份列表
+            try { generateProvinceList(); } catch (e) { console.error('省份列表生成失败:', e); }
+
+            // 更新统计
+            try { updateStats(); } catch (e) { console.error('统计更新失败:', e); }
+
+            // 更新奋斗同学列表
+            try { updateStrugglingList(); } catch (e) { console.error('奋斗同学列表更新失败:', e); }
+
+            // 初始化交互
+            try { initUnlockFunction(); } catch (e) { console.error('解锁功能初始化失败:', e); }
+            try { initMapControls(); } catch (e) { console.error('地图控件初始化失败:', e); }
+            try { initFilterEvents(); } catch (e) { console.error('筛选事件初始化失败:', e); }
+            try { initTooltipInteraction(); } catch (e) { console.error('提示框交互初始化失败:', e); }
+        } else {
+            throw new Error('数据加载失败');
         }
 
-        // 初始化地图
-        initMap();
-        
-        // 生成省份列表
-        generateProvinceList();
-        
-        // 更新统计
-        updateStats();
-        
-        // 更新奋斗同学列表
-        updateStrugglingList();
-        
-        // 初始化交互
-        initUnlockFunction();
-        initMapControls();
-        initFilterEvents();
-        initTooltipInteraction();
-        
-        // 初始化页脚链接事件
-        initFooterEvents();
-        
-        // 初始化音乐播放器
-        initMusicPlayer();
-        
-        // 隐藏骨架屏
-        setTimeout(() => {
-            skeleton.classList.add('hide');
-            setTimeout(() => {
-                skeleton.style.display = 'none';
-            }, 500);
-        }, 300);
+        // 隐藏骨架屏（即使部分初始化失败也执行）
+        setTimeout(hideSkeleton, 300);
 
     } catch (error) {
         console.error('初始化失败:', error);
-        const skeleton = document.getElementById('skeletonLoader');
-        skeleton.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:center;height:100vh;">
-                <div style="text-align:center;">
-                    <h2 style="color:#ff6b6b;margin-bottom:10px;">⚠️ 加载失败</h2>
-                    <p style="color:#666;margin-bottom:20px;">${error.message}</p>
-                    <button onclick="location.reload()" style="padding:12px 30px;background:linear-gradient(135deg,#1e6fd9,#4a9eff);color:white;border:none;border-radius:25px;cursor:pointer;font-size:14px;">重新加载</button>
+        // 仍然隐藏骨架屏，显示错误提示
+        try {
+            skeleton.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:center;height:100vh;">
+                    <div style="text-align:center;">
+                        <h2 style="color:#ff6b6b;margin-bottom:10px;">⚠️ 加载失败</h2>
+                        <p style="color:#666;margin-bottom:20px;">${error.message}</p>
+                        <button onclick="location.reload()" style="padding:12px 30px;background:linear-gradient(135deg,#1e6fd9,#4a9eff);color:white;border:none;border-radius:25px;cursor:pointer;font-size:14px;">重新加载</button>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        } catch (e) {
+            hideSkeleton();
+        }
     }
 }
 
@@ -1316,4 +1316,19 @@ function initMusicPlayer() {
 }
 
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    // 立即初始化音乐播放器（独立于地图加载）
+    initMusicPlayer();
+    // 初始化页脚链接事件
+    initFooterEvents();
+    // 安全兜底：10秒后强制隐藏骨架屏
+    setTimeout(() => {
+        const skeleton = document.getElementById('skeletonLoader');
+        if (skeleton && skeleton.style.display !== 'none') {
+            skeleton.classList.add('hide');
+            setTimeout(() => { skeleton.style.display = 'none'; }, 500);
+        }
+    }, 10000);
+    // 加载地图和数据
+    init();
+});

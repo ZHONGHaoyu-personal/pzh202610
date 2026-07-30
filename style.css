@@ -1023,6 +1023,7 @@ body {
     flex-direction: column;
     padding: 20px;
     transition: opacity 0.5s ease;
+    pointer-events: none;
 }
 
 .skeleton-loader.hide {
