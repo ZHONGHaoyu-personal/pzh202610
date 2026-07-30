@@ -240,7 +240,10 @@ function initMap() {
                 label: {
                     show: true,
                     color: '#1e6fd9',
-                    fontSize: 12
+                    fontSize: 12,
+                    formatter: function(params) {
+                        return provinceFullNames[params.name] || params.name + '省';
+                    }
                 },
                 itemStyle: {
                     areaColor: '#c5dbf5',
