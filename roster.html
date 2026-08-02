@@ -387,7 +387,7 @@
                 <button class="modal-close" id="unlockCloseBtn">×</button>
             </div>
             <div class="modal-body">
-                <p class="modal-desc">请输入本班任意一位同学的完整姓名<br><small>（要求字字对应）</small></p>
+                <p class="modal-desc">请输入本班任意一位同学的完整姓名<br><small>（仍在奋斗的同学也可以输入姓名解锁）</small></p>
                 <input type="text" id="unlockInput" class="unlock-input" placeholder="请输入同学姓名..." maxlength="10">
                 <button class="unlock-submit" id="unlockSubmitBtn">确认解锁</button>
                 <p class="unlock-hint" id="unlockHint"></p>
@@ -401,9 +401,9 @@
             <div class="achievement-stars">
                 <span>⭐</span><span>🎉</span><span>⭐</span>
             </div>
-            <h3 class="achievement-title">恭喜解锁成功！</h3>
+            <h3 class="achievement-title" id="achievementTitle">恭喜解锁成功！</h3>
             <p class="achievement-text" id="achievementText"></p>
-            <p class="achievement-subtext">所有同学姓名已完整显示</p>
+            <p class="achievement-subtext" id="achievementSubtext">所有同学姓名已完整显示</p>
             <button class="achievement-close" id="achievementCloseBtn">太棒了！</button>
         </div>
     </div>
@@ -609,6 +609,39 @@
             document.getElementById('totalProvinces').textContent = provinces.size;
         }
 
+        const strugglingStudentNames = ['陈裕禧', '李乐瑄', '李欣橦', '赖宸熹', '何星瑞', '周子萱'];
+
+        function getUnlockTarget(input) {
+            const normalizedInput = input.trim();
+            if (!normalizedInput) return null;
+
+            if (strugglingStudentNames.includes(normalizedInput)) {
+                return { type: 'struggling', name: normalizedInput };
+            }
+
+            const student = dataStore?.students.find(s => s.name === normalizedInput);
+            return student ? { type: 'student', student } : null;
+        }
+
+        function getUnlockSuccessMessage(input) {
+            const target = getUnlockTarget(input);
+            if (!target) return null;
+
+            if (target.type === 'struggling') {
+                return {
+                    title: '为你加油！',
+                    text: `${target.name}同学，继续加油！你的坚持和努力终会发光。`,
+                    subtext: '所有同学姓名已完整显示，愿你们的未来也充满光芒。'
+                };
+            }
+
+            return {
+                title: '恭喜解锁成功！',
+                text: `恭喜${target.student.name}录取到${target.student.university}（${target.student.city}）！`,
+                subtext: '所有同学姓名已完整显示'
+            };
+        }
+
         // 解锁功能
         function initUnlockFunction() {
             const unlockBtn = document.getElementById('unlockBtn');
@@ -618,7 +651,9 @@
             const unlockInput = document.getElementById('unlockInput');
             const unlockHint = document.getElementById('unlockHint');
             const achievementModal = document.getElementById('achievementModal');
+            const achievementTitle = document.getElementById('achievementTitle');
             const achievementText = document.getElementById('achievementText');
+            const achievementSubtext = document.getElementById('achievementSubtext');
             const achievementCloseBtn = document.getElementById('achievementCloseBtn');
 
             unlockBtn.addEventListener('click', () => {
@@ -651,12 +686,17 @@
                     return;
                 }
 
-                const student = dataStore.students.find(s => s.name === input);
-                if (student) {
+                const target = getUnlockTarget(input);
+                if (target) {
                     isUnlocked = true;
                     unlockModal.classList.remove('show');
                     
-                    achievementText.textContent = `恭喜${student.name}录取到${student.university}（${student.city}）！`;
+                    const successMessage = getUnlockSuccessMessage(input);
+                    if (successMessage) {
+                        achievementTitle.textContent = successMessage.title;
+                        achievementText.textContent = successMessage.text;
+                        achievementSubtext.textContent = successMessage.subtext;
+                    }
                     achievementModal.classList.add('show');
                     
                     // 更新显示

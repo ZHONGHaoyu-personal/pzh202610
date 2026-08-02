@@ -868,13 +868,45 @@ function showToast(message) {
     }, 2000);
 }
 
+const strugglingStudentNames = ['陈裕禧', '李乐瑄', '李欣橦', '赖宸熹', '何星瑞', '周子萱'];
+
+function getUnlockTarget(input) {
+    const normalizedInput = input.trim();
+    if (!normalizedInput) return null;
+
+    if (strugglingStudentNames.includes(normalizedInput)) {
+        return { type: 'struggling', name: normalizedInput };
+    }
+
+    const student = dataStore?.students.find(s => s.name === normalizedInput);
+    return student ? { type: 'student', student } : null;
+}
+
+function getUnlockSuccessMessage(input) {
+    const target = getUnlockTarget(input);
+    if (!target) return null;
+
+    if (target.type === 'struggling') {
+        return {
+            title: '为你加油！',
+            text: `${target.name}同学，继续加油！你的坚持和努力终会发光。`,
+            subtext: '所有同学姓名已完整显示，愿你们的未来也充满光芒。'
+        };
+    }
+
+    return {
+        title: '恭喜解锁成功！',
+        text: `恭喜${target.student.name}录取到${target.student.university}（${target.student.city}）！`,
+        subtext: '所有同学姓名已完整显示'
+    };
+}
+
 // 更新奋斗同学列表
 function updateStrugglingList() {
     const strugglingList = document.getElementById('strugglingList');
     if (!strugglingList) return;
     
-    const strugglingStudents = ['陈裕禧', '李乐瑄', '李欣橦', '赖宸熹', '何星瑞', '周子萱'];
-    strugglingList.innerHTML = strugglingStudents.map(name => {
+    strugglingList.innerHTML = strugglingStudentNames.map(name => {
         const maskedName = maskName(name);
         const displayName = isUnlocked ? name : maskedName;
         return `<span class="struggling-item">${displayName}</span>`;
@@ -890,7 +922,9 @@ function initUnlockFunction() {
     const unlockInput = document.getElementById('unlockInput');
     const unlockHint = document.getElementById('unlockHint');
     const achievementModal = document.getElementById('achievementModal');
+    const achievementTitle = document.getElementById('achievementTitle');
     const achievementText = document.getElementById('achievementText');
+    const achievementSubtext = document.getElementById('achievementSubtext');
     const achievementCloseBtn = document.getElementById('achievementCloseBtn');
 
     unlockBtn.addEventListener('click', () => {
@@ -925,13 +959,17 @@ function initUnlockFunction() {
             return;
         }
 
-        const student = dataStore.students.find(s => s.name === input);
-        if (student) {
+        const target = getUnlockTarget(input);
+        if (target) {
             isUnlocked = true;
             unlockModal.classList.remove('show');
             
-            // 显示成就弹窗
-            achievementText.textContent = `恭喜${student.name}录取到${student.university}（${student.city}）！`;
+            const successMessage = getUnlockSuccessMessage(input);
+            if (successMessage) {
+                achievementTitle.textContent = successMessage.title;
+                achievementText.textContent = successMessage.text;
+                achievementSubtext.textContent = successMessage.subtext;
+            }
             achievementModal.classList.add('show');
             
             // 更新所有显示
